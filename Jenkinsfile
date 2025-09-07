@@ -19,6 +19,8 @@ pipeline {
     parameters {
         booleanParam(name: 'APPLY_TF', defaultValue: false, description: 'Apply Terraform changes?')
         booleanParam(name: 'DESTROY_TF', defaultValue: false, description: 'Destroy infrastructure instead of running pipeline?')
+        booleanParam(name: 'BUILD_BACKEND', defaultValue: true, description: 'Build & Deploy backend service?')
+        booleanParam(name: 'BUILD_FRONTEND', defaultValue: true, description: 'Build & Deploy frontend service?')
     }
 
     stages {
@@ -67,7 +69,7 @@ pipeline {
         }
 
         stage('Build Backend') {
-            when { expression { return params.DESTROY_TF == false } }
+            when { expression { return params.DESTROY_TF == false && params.BUILD_BACKEND == true } }
             steps {
                 dir('gfj-be') {
                     sh 'echo "🔧 Checking Maven version..."'
@@ -89,7 +91,7 @@ pipeline {
         }
 
         stage('Build Frontend') {
-            when { expression { return params.DESTROY_TF == false } }
+            when { expression { return params.DESTROY_TF == false && params.BUILD_FRONTEND == true } }
             steps {
                 dir('gfj-ui') {
                     sh '''
@@ -102,7 +104,7 @@ pipeline {
         }
 
         stage('Deploy Backend') {
-            when { expression { return params.DESTROY_TF == false } }
+            when { expression { return params.DESTROY_TF == false && params.BUILD_BACKEND == true } }
             steps {
                 echo "🚚 Deploying Spring Boot backend..."
                 sshagent(credentials: ['ec2-creds']) {
@@ -126,7 +128,7 @@ pipeline {
         }
 
         stage('Deploy Frontend') {
-            when { expression { return params.DESTROY_TF == false } }
+            when { expression { return params.DESTROY_TF == false && params.BUILD_FRONTEND == true } }
             steps {
                 echo "🚚 Deploying React frontend..."
                 sshagent(credentials: ['ec2-creds']) {
