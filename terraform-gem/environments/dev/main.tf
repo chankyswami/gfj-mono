@@ -18,7 +18,7 @@ module "ec2_1" {
   subnet_id     = module.subnet.subnet_id
   vpc_id        = module.vpc.vpc_id
   ami_id        = var.ami_id_1
-  instance_type = "t2.micro"
+  instance_type = "t4g.small"
   name          = "gem-db"
   key_name      = "gfj-dev"
 }
@@ -28,7 +28,7 @@ module "ec2_2" {
   subnet_id     = module.subnet.subnet_id
   vpc_id        = module.vpc.vpc_id
   ami_id        = var.ami_id_2
-  instance_type = "t2.micro"
+  instance_type = "t4g.small"
   name          = "gem-app"
   key_name      = "gfj-dev"
 }
