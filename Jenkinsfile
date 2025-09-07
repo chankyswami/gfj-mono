@@ -133,13 +133,15 @@ pipeline {
                 echo "🚚 Deploying React frontend..."
                 sshagent(credentials: ['ec2-creds']) {
                     sh """
-                        # Copy build artifacts to EC2 home directory
-                        scp -o StrictHostKeyChecking=no -r gfj-ui/dist/* ${EC2_INSTANCE_USER}@${EC2_INSTANCE_IP}:${DEPLOY_PATH}/
+                        # Copy build artifacts directly into a temporary folder
+                        ssh -o StrictHostKeyChecking=no ${EC2_INSTANCE_USER}@${EC2_INSTANCE_IP} 'rm -rf ${DEPLOY_PATH}/frontend_build && mkdir -p ${DEPLOY_PATH}/frontend_build'
 
-                        # Move files into nginx html folder with sudo
+                        scp -o StrictHostKeyChecking=no -r gfj-ui/dist/* ${EC2_INSTANCE_USER}@${EC2_INSTANCE_IP}:${DEPLOY_PATH}/frontend_build/
+
+                        # Replace nginx html content with frontend build
                         ssh -o StrictHostKeyChecking=no ${EC2_INSTANCE_USER}@${EC2_INSTANCE_IP} '
                             sudo rm -rf /usr/share/nginx/html/*
-                            sudo cp -r ${DEPLOY_PATH}/* /usr/share/nginx/html/
+                            sudo cp -r ${DEPLOY_PATH}/frontend_build/* /usr/share/nginx/html/
                             sudo systemctl restart nginx
                             echo "✅ Frontend deployed to /usr/share/nginx/html"
                         '
