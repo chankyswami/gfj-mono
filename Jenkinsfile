@@ -95,7 +95,7 @@ pipeline {
                     sh '''
                         echo "🌐 Building React frontend..."
                         npm install
-                        npm run build:prod
+                        npm run build
                     '''
                 }
             }
