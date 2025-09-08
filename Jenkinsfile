@@ -82,7 +82,7 @@ pipeline {
                     sh 'ls -lh target/*.jar || echo "❌ No JAR found!"'
 
                     script {
-                        def jarFile = sh(script: "ls target/*.jar | head -n 1", returnStdout: true).trim()
+                        def jarFile = sh(script: "ls target/*.jar | grep -v '.original' | head -n 1", returnStdout: true).trim()
                         env.JAR_NAME = jarFile.tokenize('/').last()
                         echo "📌 Detected JAR: ${env.JAR_NAME}"
                     }
