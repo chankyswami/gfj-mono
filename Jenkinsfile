@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'maven-terraform-node-agent:latest'
+            image 'chankyswami/maven-terraform-node-agent:latest'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
