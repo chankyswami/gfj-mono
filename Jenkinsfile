@@ -1,9 +1,14 @@
 pipeline {
-    agent {
-        docker {
-            image 'chankyswami/maven-terraform-node-agent:latest'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
+    agent any
+    // {
+    //     docker {
+    //         any
+    //         // image 'chankyswami/maven-terraform-node-agent:latest'
+    //         // args '-v /var/run/docker.sock:/var/run/docker.sock'
+    //     }
+    // }
+    tools {
+        maven 'Maven-3.9.11'
     }
 
     environment {
