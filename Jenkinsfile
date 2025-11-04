@@ -1,12 +1,5 @@
 pipeline {
     agent any
-    // {
-    //     docker {
-    //         any
-    //         // image 'chankyswami/maven-terraform-node-agent:latest'
-    //         // args '-v /var/run/docker.sock:/var/run/docker.sock'
-    //     }
-    // }
     tools {
         maven 'Maven-3.9.11'
     }
@@ -51,6 +44,7 @@ pipeline {
                 withAWS(credentials: 'GEMS-AWS', region: "${env.AWS_REGION}") {
                     dir('terraform-gem/environments/dev') {
                         sh '''
+                            terraform init -input=false -reconfigure
                             terraform init -input=false
                             terraform plan -out=${TF_PLAN_FILE}
                         '''
